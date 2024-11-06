@@ -1,0 +1,26 @@
+month_no=$1
+if [ $# -eq 0 ]
+then
+        echo "No month number given"
+elif [[ $month_no -lt 1 && $month_no -gt 12 ]]
+then
+        echo "Invalid month number given"
+elif [[ $month_no -gt 0 && $month_no -lt 13 ]]
+then
+        case $month_no in
+                "1") echo "January";;
+                "2") echo "February";;
+                "3") echo "March";;
+                "4") echo "April";;
+                "5") echo "May";;
+                "6") echo "June";;
+                "7") echo "July";;
+                "8") echo "August";;
+                "9") echo "September";;
+                "10") echo "October";;
+                "11") echo "November";;
+                "12") echo "December";;
+        esac
+else
+        echo "Invalid month number given"
+fi
