@@ -1,0 +1,386 @@
+Shell Scripting
+-	cat /etc/os-release (To check operating system)
+
+-	echo $0 (To check shell type in operating system)
+
+-	cat /etc/shells (To check available shells)
+
+-	First program
+#!/bin/bash
+Echo “Hello world”
+
+-	To execute script:
+./script.sh       – execute permission on file required.
+Bash script.sh – execute permission on file not required.
+/path/script.sh
+
+-	Ctrl+c to terminate
+Ctrl+z to stop
+
+-	Comments in shell scripting
+#This is single line comment
+<<comment
+This is a 
+Multi line comment
+comment
+
+-	Variables
+name = “xyz”                            - create variable
+echo “My name is $name”    - use variable in script
+output = $(hostname)            - get output of command in a variable
+readonly college = “Metro”   - create a constant variable
+
+-	Arrays
+Myarr = (0 2 12.5 Hello “How are you”)
+echo ${Myarr[1]}    - Prints value at index 1
+echo ${Myarr[*]}    - Prints all values in the array
+echo ${#Myarr[*]}  - Prints length of the array
+echo ${Myarr[*]:2:2} – Prints values from index 2 and next 2 values starting from index 2
+Myarr+= ( New 80 90 ) – Adds 3 new values to Myarr
+
+
+
+-	Key-value pairs in arrays
+declare -A myArray
+myArray = ( [name]=”xyz” [age]=28 [city]=“Hyderabad”)
+echo “Name is ${myarray[name]}”
+echo “Age is $myarray{[age]}”
+
+-	String operations
+${#myvar}                  - Length of the string
+${myvar^^}		- To uppercase
+${myvar,,}		- To lowercase
+${myvar/hey/hello} - Replaces hye with hello in the string
+${myvar:4:5}	- Slices string from 4th index till 5 next characters
+
+-	User input
+1)	echo “Enter your name”
+read name
+echo “Your name is $name”
+2)	read -p “Enter your name” name
+echo “Your name is $name”
+Note – cursor blinks on same line on terminal
+
+-	Arithmetic operations
+1)	let mul = $x * $y
+let sum = $x + $y
+2)	echo “Subtraction is $(($x - $y))”
+
+-	Conditional statement
+read -p “Enter your marks” marks
+if [[ marks -gt 80 ]]
+then
+	echo “First division”
+elif [[ marks -gt 60 ]]
+then
+	echo “Second division”
+else
+	echo “Failed”
+fi
+Note – [[ ]] used in new enhanced shell version. [] can also be used
+-eq/== (Equal to) (== for string and -eq for numeric comparison)
+-gt        (Greater than)
+-ge       (Greater than or equal to)
+-lt         (Less than)
+-le        (Less than or equal to)
+-ne/!= (Not equal to)
+- Switch statement
+	echo “Provide a value:”
+	echo “a to print date”
+	echo “b to list files”
+	echo “c to print current location”
+	read choice
+	case $choice in
+		a)
+			echo “Today’s date is”
+			date
+			;;
+		b) ls;;
+		c) pwd;;
+		*) echo “Enter valid input”
+	esac
+
+-	Logical operators
+&& , || , !
+If [[ age -ge 18]] && [[country ==”India”]]
+If [[ age -ge 18 ]] && echo “Adult” || echo “Minor” 
+(In last expression if condition 1 is true then echo Adult will work else echo Minor will work.
+
+-	For loop
+1)	for i in 1 2 3 4 5
+do
+	echo “Number is $i”
+done
+2)	for i in AB CD EF
+3)	for i in {1..20}
+
+-	myarr = ( 1 2 3 4 5 )
+len = ${#myarr[*]}
+for (( i=0;i<len;i++ ))
+	echo “Value in array is ${myarr[$i]}”
+done
+
+-	Getting values from a file
+file=/home/script/names.txt
+for name in $(cat $file)
+do
+	echo $name
+done
+
+
+-	While loop
+Count=0
+Limit=10
+While [[ $count -le $limit ]]
+Do
+	Echo “Value of count is $count”
+	Let Count++
+Done
+ 
+-	Until loop
+A=10
+Until [[ $a -eq 1 ]]
+Do
+	Echo “Value of a is $a”
+	Let a—
+Done
+
+-	Infinite loop
+While true
+Do
+	Echo “Hi”
+	Sleep 2s
+Done
+For (( ;; ))
+do
+Echo “Hi”
+	Sleep 2s
+Done
+
+-	Read contents of file from while loop
+While read var
+Do
+	Echo “Value is $var”
+Done < names.txt
+
+-	Read contents from csv file
+While IFS=”,” read id name age
+Do
+	Echo “id is $id”
+	Echo “Name is $name”
+	Echo “age is $age”
+Done < test.csv
+Note: id, name, age are columns
+
+If we want to exclude first row and using cat command:
+Cat test.csv | awk ‘NR!=1 {print}’ | while IFS=”,” read id name age
+Do
+	Echo “id is $id”
+	Echo “ name is $name”
+	Echo “age is $age”
+Done
+
+-	Functions
+Function myfunc {
+	Echo “Hi”
+}
+myfunc
+Other way to define function is :
+Myfunc() {
+Echo “Hi”
+}
+
+-	Passing arguments to functions
+WelcomeNote () {
+Echo “Hi $1”
+Echo “Hi $2”
+}
+WelcomeNote A B
+
+-	For args in $@
+do
+Echo “File name is $args”
+Done
+Terminal: filename.sh abc.txt xyz.txt
+Echo $@ - all arguments
+Echo $# - number os arguments
+
+-	Echo “Give username and description”
+Echo “Username is $1”
+shift
+Echo “Description is $@”
+Note: shift removes the first argument from terminal
+
+-	Break – to stop the loop
+Continue – to stop current iteration and start next iteration
+Sleep – to create delay between two executions. 1s,1m etc
+Exit – to stop script execution
+$? – sends status of last executed command, 0 means successful, 1 means unsuccessful
+-	basename path – returns just the name of file from full path
+dirname path – returns the directory name and not the filename
+realpath test.csv – returns full path of file
+Note – if I give file name which is not present and we use realpath, then it will give the current full path, like full_path/file_name
+
+-	if [ -d directory_name ] – If directory exists
+if [ ! -d directory_name ] – If directory does not exist
+if [ -f filename ] – if file exists
+if [ ! -f filename ] – if file does not exist
+
+-	RANDOM – random number generated b/w 0 and 32767
+Echo $RANDOM
+-	UID – used id of user logged in
+Echo $UID
+
+-	Generate random number between 1 and 6
+No=$(( $RANDOM%6 +1 ))
+Check if user is root
+If [[ $UID -eq 0 ]]
+
+-	ls > file.txt – sends output of ls command to file.txt, overwrites if a not empty file
+ls >> file.txt - sends output of ls command to file.txt, does not overwrite if a not empty file
+cd /root &> /dev/null – does not print output on terminal nor redirect in a file. Output not stored anywhere
+${0} – gives script name
+
+-	logger “This is a logging for ${0}”
+logger command maintains logging of the script. Stores data in /var/logs/messages directory.
+-	set -x (enables debugging of the script. Shows flow of execution)
+-	set -e (exit when a command fails. We can use this at top, inside the script)
+-	nohup scriptname & - Use this on terminal, it runs script in background
+
+-	On terminal: at command runs a command or script at assigned time automatically
+
+at 12:10 AM 13 March 2024
+your commands 
+CTRL + D
+-	atq command – (to check scheduled job)
+-	redirect.log file will be generated after job runs successfully at same assigned time, which will have the output.
+-	atrm <job_id> - to remove a job
+
+-	For repetitive tasks (crontab command)
+-	crontab -l (list all jobs)
+-	crontab -e (to add new job, a file will open, and we will write the command)
+* * * * * cd /home/paul/scripts && ./create_file.sh
+Order of asterisk :
+Minute(0-59) Hour(0-23) day_of_month(0-31) month(1-12) day_of_week(0-6)where 0 is for Sunday
+* * * * * means at every minute
+Note : crontab.guru website for reference
+16 03 * * * cd /home/paul/scripts && ./create_file.sh (Script runs at 3:16 AM everyday)
+-	To cancel. crontab -e and remove commands
+
+-	Free or free -h for memory check
+
+Free -mt (Memory in mb)
+Free -mt | grep “Total” | awk ‘{print $4}’ (to get free memory)
+
+Script to monitor free RAM space
+-	#!bin/bash
+Free_space=$( Free -mt | grep “Total” | awk ‘{print $4}’)
+Threshold=500
+If [[ $Free_space -lt $Threshold ]]
+then
+	Echo “RAM is running low”
+Else
+	Echo “RAM sufficient”
+Fi
+-	df-h  (to see file system details)
+df -h | egrep -v “Filesystem|tmpfs” (Removes lines of output having word filesystem/tmpfs)
+df -h | egrep -v “Filesystem|tmpfs” | grep “sda2” | awk ‘{print$ 5}’ | tr -d %
+(takes sda2 entry and then takes %age data and removes %age sign)
+
+-	Email alert script for disk space
+#!/bin/bash
+File_utilized=$( Df -h | egrep -v “Filesystem|tmpfs” | grep “sda2” | awk ‘{print$ 5}’ | tr -d %)
+TO=username@mail.com
+If [[ $FU -ge 80 ]]
+Then
+	Echo “Warning!! Low disk space - $FU %” | mail -s “Disk space alert” $TO
+Else
+	Echo “All good”
+Fi
+Note : Set up postfix first to receive mails.
+Script to archive older files or files greater than 20 Mb.
+
+ 
+
+#!/bin/bash
+#Variables
+BASE=/home/paul/tutorials/find_command
+DAYS=10
+DEPTH=1
+RUN=0
+#Check if directory present or not
+If [[ ! -d $BASE ]]
+then
+	Echo “Directory not present”
+	Exit 1
+Fi
+#Check if archive folder present or not
+If [[ ! -d $BASE/archive ]]
+Then
+	Mkdir $BASE/archive
+Fi
+#find list of files larger than 20mb
+For i in ‘find $BASE -maxdepth $DEPTH -type f -size +20M’
+Do
+	If [ $RUN -eq 0 ]
+	Then
+		Echo “ [$(date ”+%Y-%m-%d %H:%M:%S”]) archiving %i -> $BASE/archive”
+		gzip $i || exit 1
+		mv $i.gz $BASE/archive || exit 1
+	fi
+done
+To automate – use crontab -e
+05 01 * * * /home/scriptname.sh
+Crontab -l to check
+
+
+
+
+
+Script for user creation
+
+ 
+ 
+
+#Script should execute with sudo/root access
+If [[ “${UID}” -ne 0 ]]
+Then
+	Echo “Please run with sudo or root.”
+	Exit 1
+Fi
+#user should provide atleast 1 argument as username else guide him
+If [[ “${#}” -lt 1 ]]
+Then
+	Echo “Usage: {0} USER_NAME [Comment]…”
+	Echo “Create a user with name USER_NAME and comments field of comment”
+	Exit 1
+Fi
+#Store 1st argument as username
+USER_NAME=”${1}”
+#In case of more than 1 argument, store it as account comments
+Shift
+COMMENT=”${@}”
+#create a password
+PASSWORD=”$(date +%c%N)” 
+#Create the user
+Useradd -c “$COMMENT” -m $USER_NAME
+#Check if user is successfully created or not
+If [[ $? -ne 0 ]]
+Then
+	Echo “The account could not be created”
+Exit 1
+Fi
+#Set the password for the user
+Echo $PASSWORD | passwd -stdin $USER_NAME
+#Check if password is successfully set or not
+If [[ $? -ne 0 ]]
+Then
+	Echo “Password could not be set”
+Exit 1
+Fi
+#Password change on first login
+Passwd -e $USER_NAME
+#Display the username password and host where it is created
+Echo “USERNAME: $USER_NAME”
+Echo “PASSWORD: $PASSWORD”
+Echo “Hostname: $(hostname)”
